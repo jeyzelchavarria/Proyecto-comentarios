@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Red Social</title>
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#ffffff,#ffffff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin: 0px;;
+}
+
+
+/* Caja principal */
+.container{
+  margin-top: 80px;
+  background:white;
+  width:95%;
+  max-width:400px;
+  border-radius:50px;
+  box-shadow:0 0 20px rgba(255, 36, 36, 0.2);
+  padding:100px;
+}
+
+/* Registro */
+h2{text-align:center;}
+input,button{
+  width:95%;
+  padding:19px;
+  margin-top:15px;
+  border-radius:19px;
+  border:1px solid #9e9e9e;
+}
+button{
+  background:#ff416c;
+  color:white;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+  width: 420px;
+}
+button:hover{background:#ff4b2b;}
+
+/* Publicación */
+.post img{
+  width:85%;
+  border: radius 17px;
+}
+.actions{
+  display:flex;
+  justify-content:space-around;
+  margin-top:10px;
+  font-size:20px;
+  cursor:pointer;
+}
+.comments{
+  margin-top:10px;
+}
+.comment{
+  background:#f1f1f1;
+  padding:8px;
+  border-radius:10px;
+  margin-top:5px;
+  font-size:14px;
+}
+.hidden{display:none;}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="registerBox">
+  <h2>Registro</h2>
+  <input type="email" id="email" placeholder="Correo">
+  <input type="password" id="password" placeholder="Contraseña (con números)">
+  <center>
+    <button onclick="register()">Enviar</button>
+  </center>
+</div>
+
+
+<div class="container hidden" id="socialBox">
+  <h2>Publicación</h2>
+   
+
+  <div class="post">
+    <center>
+      <img src="https://" alt="Imagen">
+    </center>
+  </div>
+
+  <div class="actions">
+    <span onclick="likePost()">Me gusta</span>
+    <span onclick="showCommentBox()">Comentar</span>
+    <span onclick="sharePost()"> Compartir</span>
+  </div>
+
+  <div id="commentBox" class="hidden">
+    <input type="text" id="commentInput" placeholder="Escribe tu comentario...">
+    <button onclick="saveComment()">Guardar</button>
+  </div>
+
+  <div class="comments" id="commentsList"></div>
+</div>
+
+
+<script>
+// Registro
+function register(){
+  let email = document.getElementById("email").value;
+  let pass = document.getElementById("password").value;
+
+  // Validar contraseña con números y letras
+  let regex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+
+  if(!email || !pass){
+    alert("ERROR");
+    return;
+  }
+
+  if(!regex.test(pass)){
+    alert("!ERROR¡ La contraseña debe tener letras y números");
+    return;
+  }
+
+  localStorage.setItem("userEmail", email);
+
+  document.getElementById("registerBox").classList.add("hidden");
+  document.getElementById("socialBox").classList.remove("hidden");
+
+  loadComments();
+}
+
+// Me gusta
+function likePost(){
+  alert("Te gustó la foto");
+}
+
+// Compartir
+function sharePost(){
+  alert("Se compartio la imagen");
+}
+
+// Mostrar caja comentario
+function showCommentBox(){
+  document.getElementById("commentBox").classList.toggle("hidden");
+}
+
+// Guardar comentario
+function saveComment(){
+  let comment = document.getElementById("commentInput").value;
+  if(comment === "") return;
+
+  let comments = JSON.parse(localStorage.getItem("comments")) || [];
+  comments.push(comment);
+  localStorage.setItem("comments", JSON.stringify(comments));
+
+  document.getElementById("commentInput").value = "";
+  loadComments();
+}
+
+// Cargar comentarios
+function loadComments(){
+  let comments = JSON.parse(localStorage.getItem("comments")) || [];
+  let list = document.getElementById("commentsList");
+  list.innerHTML = "";
+  comments.forEach(c=>{
+    let div = document.createElement("div");
+    div.className = "comment";
+    div.textContent = c;
+    list.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
